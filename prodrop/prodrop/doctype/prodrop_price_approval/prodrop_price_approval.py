@@ -1,4 +1,4 @@
 from frappe.model.document import Document
 
-class ProdropPriceApproval(Document):
+class ProDropPriceApproval(Document):
     pass
