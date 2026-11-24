@@ -87,4 +87,4 @@ def cash_hold(available_cash: float, pending_supplier_cost: float, ad_budget_tod
 		reasoning="Taking more orders now could leave supplier payments or ad spend unfunded.",
 		expected_impact=round(available_cash - needed, 2),
 		evidence={"available_cash": available_cash, "needed": needed, "reserve": reserve},
-)
+	)
