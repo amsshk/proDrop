@@ -1,0 +1,18 @@
+{
+ "doctype": "DocType",
+ "name": "CJ Settings",
+ "module": "proDrop",
+ "issingle": 1,
+ "custom": 0,
+ "fields": [
+  {"fieldname": "enabled", "label": "Enable CJ Integration", "fieldtype": "Check", "default": "0"},
+  {"fieldname": "api_key", "label": "CJ API Key", "fieldtype": "Password", "reqd": 1},
+  {"fieldname": "platform_token", "label": "Platform Token", "fieldtype": "Password"},
+  {"fieldname": "connection_status", "label": "Connection Status", "fieldtype": "Data", "read_only": 1},
+  {"fieldname": "last_connected", "label": "Last Connected", "fieldtype": "Datetime", "read_only": 1},
+  {"fieldname": "last_error", "label": "Last Error", "fieldtype": "Small Text", "read_only": 1}
+ ],
+ "permissions": [
+  {"role": "System Manager", "read": 1, "write": 1}
+ ]
+}

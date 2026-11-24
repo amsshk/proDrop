@@ -1,0 +1,85 @@
+{
+ "doctype": "DocType",
+ "name": "ProDrop Pricing Settings",
+ "module": "proDrop",
+ "issingle": 1,
+ "fields": [
+  {
+   "fieldname": "selling_currency",
+   "label": "Selling Currency",
+   "fieldtype": "Link",
+   "options": "Currency",
+   "default": "AED",
+   "reqd": 1
+  },
+  {
+   "fieldname": "supplier_currency",
+   "label": "Supplier Currency",
+   "fieldtype": "Link",
+   "options": "Currency",
+   "default": "USD",
+   "reqd": 1
+  },
+  {
+   "fieldname": "exchange_rate",
+   "label": "USD to AED Exchange Rate",
+   "fieldtype": "Float",
+   "default": 3.6725,
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_margin",
+   "label": "Target Profit Margin (%)",
+   "fieldtype": "Percent",
+   "default": 40,
+   "reqd": 1
+  },
+  {
+   "fieldname": "payment_fee_percent",
+   "label": "Payment Fee (%)",
+   "fieldtype": "Percent",
+   "default": 0
+  },
+  {
+   "fieldname": "shipping_cost",
+   "label": "Shipping Cost (AED)",
+   "fieldtype": "Float",
+   "default": 0
+  },
+  {
+   "fieldname": "packaging_cost",
+   "label": "Packaging Cost (AED)",
+   "fieldtype": "Float",
+   "default": 0
+  },
+  {
+   "fieldname": "other_cost",
+   "label": "Other Cost (AED)",
+   "fieldtype": "Float",
+   "default": 0
+  },
+  {
+   "fieldname": "advertising_cost",
+   "label": "Advertising Allowance (AED)",
+   "fieldtype": "Float",
+   "default": 0
+  },
+  {
+   "fieldname": "price_list",
+   "label": "Selling Price List",
+   "fieldtype": "Link",
+   "options": "Price List",
+   "default": "Standard Selling"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1
+  }
+ ],
+ "custom": 0
+}

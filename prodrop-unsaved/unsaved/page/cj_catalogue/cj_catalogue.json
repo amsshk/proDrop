@@ -1,0 +1,11 @@
+{
+ "doctype": "Page",
+ "name": "cj-catalogue",
+ "page_name": "cj-catalogue",
+ "module": "proDrop",
+ "title": "CJ Product Catalogue",
+ "standard": "Yes",
+ "roles": [
+  {"role": "System Manager"}
+ ]
+}

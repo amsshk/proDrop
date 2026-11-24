@@ -1,0 +1,61 @@
+{
+ "doctype": "DocType",
+ "name": "ProDrop Category Pricing Rule",
+ "module": "proDrop",
+ "autoname": "field:category_name",
+ "fields": [
+  {
+   "fieldname": "category_name",
+   "label": "CJ Category Name",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "margin_percent",
+   "label": "Target Margin Override (%)",
+   "fieldtype": "Percent"
+  },
+  {
+   "fieldname": "payment_fee_percent",
+   "label": "Payment Fee Override (%)",
+   "fieldtype": "Percent"
+  },
+  {
+   "fieldname": "shipping_cost",
+   "label": "Shipping Override (AED)",
+   "fieldtype": "Float"
+  },
+  {
+   "fieldname": "packaging_cost",
+   "label": "Packaging Override (AED)",
+   "fieldtype": "Float"
+  },
+  {
+   "fieldname": "other_cost",
+   "label": "Other Cost Override (AED)",
+   "fieldtype": "Float"
+  },
+  {
+   "fieldname": "advertising_cost",
+   "label": "Advertising Override (AED)",
+   "fieldtype": "Float"
+  },
+  {
+   "fieldname": "enabled",
+   "label": "Enabled",
+   "fieldtype": "Check",
+   "default": 1
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1
+  }
+ ],
+ "custom": 0
+}

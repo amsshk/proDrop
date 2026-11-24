@@ -1,0 +1,130 @@
+{
+ "doctype": "DocType",
+ "name": "ProDrop Price Approval",
+ "module": "proDrop",
+ "autoname": "hash",
+ "fields": [
+  {
+   "fieldname": "product_name",
+   "label": "Product",
+   "fieldtype": "Data",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cj_product_id",
+   "label": "CJ Product ID",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "cj_variant_id",
+   "label": "CJ Variant ID",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "item_code",
+   "label": "ERPNext Item",
+   "fieldtype": "Link",
+   "options": "Item"
+  },
+  {
+   "fieldname": "category_name",
+   "label": "Category",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "supplier_cost",
+   "label": "Supplier Cost",
+   "fieldtype": "Currency"
+  },
+  {
+   "fieldname": "supplier_currency",
+   "label": "Supplier Currency",
+   "fieldtype": "Link",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "exchange_rate",
+   "label": "Exchange Rate",
+   "fieldtype": "Float"
+  },
+  {
+   "fieldname": "converted_supplier_cost",
+   "label": "Supplier Cost AED",
+   "fieldtype": "Currency"
+  },
+  {
+   "fieldname": "shipping_cost",
+   "label": "Shipping AED",
+   "fieldtype": "Currency"
+  },
+  {
+   "fieldname": "packaging_cost",
+   "label": "Packaging AED",
+   "fieldtype": "Currency"
+  },
+  {
+   "fieldname": "other_cost",
+   "label": "Other Cost AED",
+   "fieldtype": "Currency"
+  },
+  {
+   "fieldname": "advertising_cost",
+   "label": "Advertising AED",
+   "fieldtype": "Currency"
+  },
+  {
+   "fieldname": "total_cost",
+   "label": "Total Cost AED",
+   "fieldtype": "Currency"
+  },
+  {
+   "fieldname": "margin_percent",
+   "label": "Target Margin (%)",
+   "fieldtype": "Percent"
+  },
+  {
+   "fieldname": "payment_fee_percent",
+   "label": "Payment Fee (%)",
+   "fieldtype": "Percent"
+  },
+  {
+   "fieldname": "selling_price",
+   "label": "Proposed Selling Price AED",
+   "fieldtype": "Currency"
+  },
+  {
+   "fieldname": "expected_profit",
+   "label": "Expected Profit AED",
+   "fieldtype": "Currency"
+  },
+  {
+   "fieldname": "price_list",
+   "label": "Selling Price List",
+   "fieldtype": "Link",
+   "options": "Price List"
+  },
+  {
+   "fieldname": "status",
+   "label": "Status",
+   "fieldtype": "Select",
+   "options": "Pending\\nApproved\\nRejected",
+   "default": "Pending",
+   "reqd": 1
+  },
+  {
+   "fieldname": "decision_notes",
+   "label": "Decision Notes",
+   "fieldtype": "Small Text"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1
+  }
+ ],
+ "custom": 0
+}
