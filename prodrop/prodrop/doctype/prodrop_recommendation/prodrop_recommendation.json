@@ -1,0 +1,21 @@
+{
+ "doctype": "DocType",
+ "name": "ProDrop Recommendation",
+ "module": "proDrop",
+ "autoname": "hash",
+ "fields": [
+  {"fieldname": "kind", "label": "Type", "fieldtype": "Select", "options": "pricing\nsupplier_switch\npause_product\ncash_hold", "reqd": 1},
+  {"fieldname": "product", "label": "Product", "fieldtype": "Data"},
+  {"fieldname": "signal", "label": "What was detected", "fieldtype": "Small Text", "reqd": 1},
+  {"fieldname": "reasoning", "label": "Why this is suggested", "fieldtype": "Small Text", "reqd": 1},
+  {"fieldname": "expected_impact", "label": "Expected Impact per Order (AED)", "fieldtype": "Currency"},
+  {"fieldname": "evidence", "label": "Evidence (JSON)", "fieldtype": "Code", "options": "JSON"},
+  {"fieldname": "status", "label": "Status", "fieldtype": "Select", "options": "Pending\nApproved\nRejected\nVerified", "default": "Pending", "reqd": 1},
+  {"fieldname": "decision_notes", "label": "Decision Notes", "fieldtype": "Small Text"},
+  {"fieldname": "verified_result", "label": "Verified Result", "fieldtype": "Small Text"}
+ ],
+ "permissions": [
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1}
+ ],
+ "custom": 0
+}
