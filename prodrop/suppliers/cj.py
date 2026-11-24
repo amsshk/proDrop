@@ -49,14 +49,26 @@ class CJClient:
 			raise CJError(body.get("message") or "CJ request failed")
 		return body.get("data")
 
-	def list_products(self, page: int = 1, category_id: str | None = None, sku: str | None = None):
-		"""Browse CJ products (20 per page). Filters: category id or product SKU."""
-		params = {"pageNum": page}
-		if category_id:
-			params["categoryId"] = category_id
-		if sku:
-			params["productSku"] = sku
-		return self._request("GET", "/product/list", params=params)
+	def list_products(self, page: int = 1, category_id: str | None = None, sku: str | None = None, keyword: str | None = None, size: int = 20):
+	    """Search CJ products using Product List V2."""
+	    params = {"page": max(1, min(int(page), 1000)), "size": max(1, min(int(size), 100))}
+	    search_term = keyword or sku
+	    if search_term:
+	        params["keyWord"] = search_term
+	    if category_id:
+	        params["categoryId"] = category_id
+	    return self._request("GET", "/product/listV2", params=params)
+
+	def get_product_detail(self, pid: str):
+	    """Get full CJ product details by product ID."""
+	    return self._request("GET", "/product/query", params={"pid": pid})
+
+	def list_variants(self, pid: str, country_code: str | None = None):
+	    """Get variants for a CJ product."""
+	    params = {"pid": pid}
+	    if country_code:
+	        params["countryCode"] = country_code
+	    return self._request("GET", "/product/variant/query", params=params)
 
 	def get_stock(self, vid: str):
 		"""Stock for one CJ variant id. Returns CJ's raw data."""
