@@ -89,3 +89,19 @@ def drop_already_pending(recs: list[dict], pending: set[tuple[str, str]]) -> lis
 	pending holds (product, kind) pairs taken from existing Pending recommendations.
 	"""
 	return [r for r in recs if (r["product"], r["kind"]) not in pending]
+
+
+def split_pending(recs: list[dict], pending: dict[tuple[str, str], str]) -> tuple[list[dict], list[tuple[str, dict]]]:
+	"""Split recommendations into new ones and updates to existing Pending records.
+
+	pending maps (product, kind) to the existing record's name.
+	Returns (to_create, [(record_name, rec), ...]).
+	"""
+	to_create, to_update = [], []
+	for r in recs:
+		name = pending.get((r["product"], r["kind"]))
+		if name:
+			to_update.append((name, r))
+		else:
+			to_create.append(r)
+	return to_create, to_update

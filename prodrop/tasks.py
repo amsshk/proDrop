@@ -10,7 +10,7 @@ import json
 import frappe
 import requests
 
-from prodrop.analysis import FreightResult, Item, Settings, drop_already_pending, run_analysis
+from prodrop.analysis import FreightResult, Item, Settings, run_analysis, split_pending
 from prodrop.suppliers.cj import CJClient, BASE_URL
 from prodrop.suppliers.cj_freight import build_tip_request, pick_cheapest
 
@@ -69,11 +69,21 @@ def run_analysis_now():
 
 	recs = run_analysis(items, settings, _freight_fetcher(client, now), now)
 	pending = {
-		(r.product, r.kind)
-		for r in frappe.get_all("ProDrop Recommendation", filters={"status": "Pending"}, fields=["product", "kind"])
+		(r.product, r.kind): r.name
+		for r in frappe.get_all("ProDrop Recommendation", filters={"status": "Pending"},
+		                        fields=["name", "product", "kind"])
 	}
-	recs = drop_already_pending(recs, pending)
-	for r in recs:
+	to_create, to_update = split_pending(recs, pending)
+	for name, r in to_update:
+		doc = frappe.get_doc("ProDrop Recommendation", name)
+		doc.update({
+			"signal": r["signal"],
+			"reasoning": r["reasoning"],
+			"expected_impact": r["expected_impact"],
+			"evidence": json.dumps(r["evidence"], indent=1),
+		})
+		doc.save(ignore_permissions=True)
+	for r in to_create:
 		frappe.get_doc({
 			"doctype": "ProDrop Recommendation",
 			"kind": r["kind"],
@@ -85,7 +95,7 @@ def run_analysis_now():
 			"status": "Pending",
 		}).insert(ignore_permissions=True)
 	frappe.db.commit()
-	return len(recs)
+	return len(to_create) + len(to_update)
 
 
 def refresh_trends():
