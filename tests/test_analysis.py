@@ -74,3 +74,21 @@ class TestDedupe(unittest.TestCase):
 	def test_empty_pending_keeps_all(self):
 		recs = [{"product": "A", "kind": "pause_product"}]
 		self.assertEqual(drop_already_pending(recs, set()), recs)
+
+
+from prodrop.analysis import split_pending  # noqa: E402
+
+
+class TestSplitPending(unittest.TestCase):
+	def test_existing_pending_becomes_update(self):
+		recs = [{"product": "A", "kind": "pause_product", "signal": "new"}]
+		create, update = split_pending(recs, {("A", "pause_product"): "REC-1"})
+		self.assertEqual(create, [])
+		self.assertEqual(update[0][0], "REC-1")
+		self.assertEqual(update[0][1]["signal"], "new")
+
+	def test_unseen_product_is_created(self):
+		recs = [{"product": "B", "kind": "pause_product"}]
+		create, update = split_pending(recs, {("A", "pause_product"): "REC-1"})
+		self.assertEqual(create, recs)
+		self.assertEqual(update, [])
