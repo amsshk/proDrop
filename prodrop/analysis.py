@@ -81,3 +81,11 @@ def run_analysis(items: list[Item], settings: Settings,
 			rec.evidence["calculated_at"] = now
 			out.append(rec.as_dict())
 	return out
+
+
+def drop_already_pending(recs: list[dict], pending: set[tuple[str, str]]) -> list[dict]:
+	"""Remove recommendations that already have a Pending record for the same product and type.
+
+	pending holds (product, kind) pairs taken from existing Pending recommendations.
+	"""
+	return [r for r in recs if (r["product"], r["kind"]) not in pending]

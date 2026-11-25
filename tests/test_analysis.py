@@ -57,3 +57,20 @@ class TestAnalysis(unittest.TestCase):
 
 if __name__ == "__main__":
 	unittest.main()
+
+
+from prodrop.analysis import drop_already_pending  # noqa: E402
+
+
+class TestDedupe(unittest.TestCase):
+	def test_existing_pending_skipped(self):
+		recs = [{"product": "A", "kind": "pause_product"}, {"product": "B", "kind": "pause_product"}]
+		self.assertEqual(drop_already_pending(recs, {("A", "pause_product")}), [recs[1]])
+
+	def test_same_product_different_kind_kept(self):
+		recs = [{"product": "A", "kind": "pricing"}]
+		self.assertEqual(drop_already_pending(recs, {("A", "pause_product")}), recs)
+
+	def test_empty_pending_keeps_all(self):
+		recs = [{"product": "A", "kind": "pause_product"}]
+		self.assertEqual(drop_already_pending(recs, set()), recs)
