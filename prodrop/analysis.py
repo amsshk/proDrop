@@ -134,3 +134,16 @@ def stock_totals(rows: Optional[list[dict]]) -> tuple[Optional[int], Optional[in
 	factory = sum(int(r.get("factoryInventoryNum") or 0) for r in rows)
 	warehouse = sum(int(r.get("cjInventoryNum") or 0) for r in rows)
 	return factory, warehouse
+
+
+ALLOWED_TRANSITIONS = {
+	"Pending": {"Approved", "Rejected"},
+	"Approved": {"Verified"},
+	"Rejected": set(),
+	"Verified": set(),
+}
+
+
+def can_transition(current: str, new: str) -> bool:
+	"""Pending can be approved or rejected. Approved can be marked Verified. Rejected and Verified are final."""
+	return new in ALLOWED_TRANSITIONS.get(current, set())

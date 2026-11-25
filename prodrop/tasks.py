@@ -107,3 +107,28 @@ def refresh_trends():
 def sync_supplier_stock():
 	"""Placeholder: stock sync is not scheduled yet."""
 	pass
+
+
+@frappe.whitelist()
+def decide_recommendation(name, decision, notes=None):
+	"""Approve or reject a Pending recommendation and record why.
+
+	This only records the decision. It does not change prices, listings or orders.
+	"""
+	from prodrop.analysis import can_transition
+
+	frappe.only_for("System Manager")
+	if decision not in ("Approved", "Rejected"):
+		frappe.throw("Decision must be Approved or Rejected.")
+	if not (notes or "").strip():
+		frappe.throw("Write a short note explaining your decision.")
+
+	doc = frappe.get_doc("ProDrop Recommendation", name)
+	if not can_transition(doc.status, decision):
+		frappe.throw(f"Cannot change a {doc.status} recommendation to {decision}.")
+
+	doc.status = decision
+	doc.decision_notes = notes.strip()
+	doc.save(ignore_permissions=True)
+	frappe.db.commit()
+	return doc.status
