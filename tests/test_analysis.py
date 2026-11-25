@@ -50,6 +50,10 @@ class TestAnalysis(unittest.TestCase):
 		for rec in run_analysis([item], S, live(2.71), NOW):
 			self.assertEqual(rec["status"], "Pending")
 
+	def test_unknown_warehouse_stock_skips_check(self):
+		item = Item("Unknown", "v1", 2.0, None, None, 150.0)
+		self.assertEqual(run_analysis([item], S, live(2.0), NOW), [])
+
 
 if __name__ == "__main__":
 	unittest.main()

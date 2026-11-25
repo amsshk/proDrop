@@ -1,0 +1,18 @@
+{
+ "doctype": "DocType",
+ "name": "ProDrop Tracked Product",
+ "module": "proDrop",
+ "autoname": "hash",
+ "fields": [
+  {"fieldname": "pid", "label": "CJ Product ID", "fieldtype": "Data", "reqd": 1},
+  {"fieldname": "vid", "label": "CJ Variant ID", "fieldtype": "Data", "reqd": 1},
+  {"fieldname": "product_name", "label": "Product Name", "fieldtype": "Data"},
+  {"fieldname": "selling_price_aed", "label": "Selling Price (AED)", "fieldtype": "Currency", "reqd": 1},
+  {"fieldname": "enabled", "label": "Track in daily analysis", "fieldtype": "Check", "default": "1"},
+  {"fieldname": "notes", "label": "Notes", "fieldtype": "Small Text"}
+ ],
+ "permissions": [
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1}
+ ],
+ "custom": 0
+}
