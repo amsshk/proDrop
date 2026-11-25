@@ -147,5 +147,30 @@ class TestRuleKeys(unittest.TestCase):
 
 
 
+
+from prodrop.analysis import can_transition  # noqa: E402
+
+
+class TestTransitions(unittest.TestCase):
+	def test_pending_can_be_decided(self):
+		self.assertTrue(can_transition("Pending", "Approved"))
+		self.assertTrue(can_transition("Pending", "Rejected"))
+
+	def test_approved_can_be_verified_only(self):
+		self.assertTrue(can_transition("Approved", "Verified"))
+		self.assertFalse(can_transition("Approved", "Rejected"))
+
+	def test_rejected_and_verified_are_final(self):
+		self.assertFalse(can_transition("Rejected", "Approved"))
+		self.assertFalse(can_transition("Verified", "Pending"))
+
+	def test_unknown_status_blocked(self):
+		self.assertFalse(can_transition("Garbage", "Approved"))
+
+
+if __name__ == "__main__":
+	unittest.main()
+
+
 if __name__ == "__main__":
 	unittest.main()
