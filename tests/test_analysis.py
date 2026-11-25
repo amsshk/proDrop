@@ -77,15 +77,15 @@ from prodrop.analysis import split_pending  # noqa: E402
 
 class TestSplitPending(unittest.TestCase):
 	def test_existing_pending_becomes_update(self):
-		recs = [{"product": "A", "kind": "pause_product", "signal": "new"}]
-		create, update = split_pending(recs, {("A", "pause_product"): "REC-1"})
+		recs = [{"product": "A", "kind": "pause_product", "signal": "new", "evidence": {"net_margin_pct": 2.0}}]
+		create, update = split_pending(recs, {("A", "pause_product", "margin"): "REC-1"})
 		self.assertEqual(create, [])
 		self.assertEqual(update[0][0], "REC-1")
 		self.assertEqual(update[0][1]["signal"], "new")
 
 	def test_unseen_product_is_created(self):
-		recs = [{"product": "B", "kind": "pause_product"}]
-		create, update = split_pending(recs, {("A", "pause_product"): "REC-1"})
+		recs = [{"product": "B", "kind": "pause_product", "evidence": {"net_margin_pct": 2.0}}]
+		create, update = split_pending(recs, {("A", "pause_product", "margin"): "REC-1"})
 		self.assertEqual(create, recs)
 		self.assertEqual(update, [])
 
@@ -112,6 +112,39 @@ class TestStockTotals(unittest.TestCase):
 		item = Item("Stuck", "2406150633381612900", 2.0, *stock_totals(LIVE_STOCK), 150.0)
 		recs = run_analysis([item], S, live(2.0), NOW)
 		self.assertEqual([r["kind"] for r in recs], ["pause_product"])
+
+
+from prodrop.analysis import rule_of  # noqa: E402
+
+
+class TestRuleKeys(unittest.TestCase):
+	def test_rule_detected_from_evidence(self):
+		self.assertEqual(rule_of({"net_margin_pct": -3.0}), "margin")
+		self.assertEqual(rule_of({"factory_units": 5, "warehouse_units": 0}), "stock")
+		self.assertEqual(rule_of('{"warehouse_units": 0}'), "stock")
+		self.assertEqual(rule_of(None), "unknown")
+		self.assertEqual(rule_of("not json"), "unknown")
+
+	def test_margin_and_stock_both_kept_for_same_product(self):
+		recs = [
+			{"product": "A", "kind": "pause_product", "evidence": {"net_margin_pct": -3.0}},
+			{"product": "A", "kind": "pause_product", "evidence": {"warehouse_units": 0}},
+		]
+		create, update = split_pending(recs, {})
+		self.assertEqual(len(create), 2)
+		self.assertEqual(update, [])
+
+	def test_each_rule_updates_its_own_record(self):
+		recs = [
+			{"product": "A", "kind": "pause_product", "evidence": {"net_margin_pct": -3.0}},
+			{"product": "A", "kind": "pause_product", "evidence": {"warehouse_units": 0}},
+		]
+		pending = {("A", "pause_product", "margin"): "M-1", ("A", "pause_product", "stock"): "S-1"}
+		create, update = split_pending(recs, pending)
+		self.assertEqual(create, [])
+		self.assertEqual(sorted(name for name, _ in update), ["M-1", "S-1"])
+
+
 
 
 if __name__ == "__main__":
