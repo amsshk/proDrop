@@ -10,7 +10,7 @@ import json
 import frappe
 import requests
 
-from prodrop.analysis import FreightResult, Item, Settings, run_analysis, split_pending
+from prodrop.analysis import FreightResult, Item, Settings, run_analysis, split_pending, stock_totals
 from prodrop.suppliers.cj import CJClient, BASE_URL
 from prodrop.suppliers.cj_freight import build_tip_request, pick_cheapest
 
@@ -58,12 +58,13 @@ def run_analysis_now():
 		if not match or not match.get("variantSellPrice"):
 			frappe.log_error(f"No price for variant {t.vid}", "proDrop analysis")
 			continue
+		factory_units, warehouse_units = stock_totals(client.get_stock(t.vid))
 		items.append(Item(
 			product=t.product_name or t.vid,
 			vid=t.vid,
 			variant_price_usd=float(match["variantSellPrice"]),
-			factory_units=None,
-			warehouse_units=None,  # stock format not yet confirmed; warehouse check skipped
+			factory_units=factory_units,
+			warehouse_units=warehouse_units,
 			selling_price_aed=float(t.selling_price_aed),
 		))
 

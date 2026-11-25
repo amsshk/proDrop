@@ -105,3 +105,16 @@ def split_pending(recs: list[dict], pending: dict[tuple[str, str], str]) -> tupl
 		else:
 			to_create.append(r)
 	return to_create, to_update
+
+
+def stock_totals(rows: Optional[list[dict]]) -> tuple[Optional[int], Optional[int]]:
+	"""Return (factory_units, warehouse_units) from CJ's stock response.
+
+	warehouse_units uses cjInventoryNum: stock in CJ's own warehouse, which can ship to customers.
+	factoryInventoryNum is supplier stock that cannot ship yet. Returns (None, None) if no rows.
+	"""
+	if not rows:
+		return None, None
+	factory = sum(int(r.get("factoryInventoryNum") or 0) for r in rows)
+	warehouse = sum(int(r.get("cjInventoryNum") or 0) for r in rows)
+	return factory, warehouse
