@@ -4,6 +4,7 @@ Pure Python. The ERPNext job will pass in real data and a real freight fetcher.
 Recommends only. Never changes prices, pauses products or places orders.
 """
 
+import json
 from dataclasses import dataclass
 from typing import Callable, Optional
 
@@ -91,15 +92,30 @@ def drop_already_pending(recs: list[dict], pending: set[tuple[str, str]]) -> lis
 	return [r for r in recs if (r["product"], r["kind"]) not in pending]
 
 
-def split_pending(recs: list[dict], pending: dict[tuple[str, str], str]) -> tuple[list[dict], list[tuple[str, dict]]]:
+def rule_of(evidence) -> str:
+	"""Which rule produced a recommendation: 'margin' or 'stock'. Accepts a dict or its JSON text."""
+	if isinstance(evidence, str):
+		try:
+			evidence = json.loads(evidence)
+		except ValueError:
+			return "unknown"
+	evidence = evidence or {}
+	if "net_margin_pct" in evidence:
+		return "margin"
+	if "warehouse_units" in evidence:
+		return "stock"
+	return "unknown"
+
+
+def split_pending(recs: list[dict], pending: dict[tuple[str, str, str], str]) -> tuple[list[dict], list[tuple[str, dict]]]:
 	"""Split recommendations into new ones and updates to existing Pending records.
 
-	pending maps (product, kind) to the existing record's name.
+	Keys are (product, kind, rule). pending maps each key to the existing record's name.
 	Returns (to_create, [(record_name, rec), ...]).
 	"""
 	to_create, to_update = [], []
 	for r in recs:
-		name = pending.get((r["product"], r["kind"]))
+		name = pending.get((r["product"], r["kind"], rule_of(r["evidence"])))
 		if name:
 			to_update.append((name, r))
 		else:

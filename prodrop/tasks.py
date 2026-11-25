@@ -10,7 +10,7 @@ import json
 import frappe
 import requests
 
-from prodrop.analysis import FreightResult, Item, Settings, run_analysis, split_pending, stock_totals
+from prodrop.analysis import FreightResult, Item, Settings, rule_of, run_analysis, split_pending, stock_totals
 from prodrop.suppliers.cj import CJClient, BASE_URL
 from prodrop.suppliers.cj_freight import build_tip_request, pick_cheapest
 
@@ -70,9 +70,9 @@ def run_analysis_now():
 
 	recs = run_analysis(items, settings, _freight_fetcher(client, now), now)
 	pending = {
-		(r.product, r.kind): r.name
+		(r.product, r.kind, rule_of(r.evidence)): r.name
 		for r in frappe.get_all("ProDrop Recommendation", filters={"status": "Pending"},
-		                        fields=["name", "product", "kind"])
+		                        fields=["name", "product", "kind", "evidence"])
 	}
 	to_create, to_update = split_pending(recs, pending)
 	for name, r in to_update:
