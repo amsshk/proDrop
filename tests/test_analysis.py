@@ -55,10 +55,6 @@ class TestAnalysis(unittest.TestCase):
 		self.assertEqual(run_analysis([item], S, live(2.0), NOW), [])
 
 
-if __name__ == "__main__":
-	unittest.main()
-
-
 from prodrop.analysis import drop_already_pending  # noqa: E402
 
 
@@ -92,3 +88,31 @@ class TestSplitPending(unittest.TestCase):
 		create, update = split_pending(recs, {("A", "pause_product"): "REC-1"})
 		self.assertEqual(create, recs)
 		self.assertEqual(update, [])
+
+
+from prodrop.analysis import stock_totals  # noqa: E402
+
+LIVE_STOCK = [{"vid": "2406150633381612900", "areaEn": "China Warehouse", "storageNum": 12810,
+               "totalInventoryNum": 12810, "cjInventoryNum": 0, "factoryInventoryNum": 12810, "stock": []}]
+
+
+class TestStockTotals(unittest.TestCase):
+	def test_live_shape_zero_warehouse(self):
+		self.assertEqual(stock_totals(LIVE_STOCK), (12810, 0))
+
+	def test_sums_across_warehouses(self):
+		rows = [{"cjInventoryNum": 5, "factoryInventoryNum": 1}, {"cjInventoryNum": 7, "factoryInventoryNum": 2}]
+		self.assertEqual(stock_totals(rows), (3, 12))
+
+	def test_empty_response_unknown(self):
+		self.assertEqual(stock_totals([]), (None, None))
+		self.assertEqual(stock_totals(None), (None, None))
+
+	def test_zero_warehouse_flags_recommendation(self):
+		item = Item("Stuck", "2406150633381612900", 2.0, *stock_totals(LIVE_STOCK), 150.0)
+		recs = run_analysis([item], S, live(2.0), NOW)
+		self.assertEqual([r["kind"] for r in recs], ["pause_product"])
+
+
+if __name__ == "__main__":
+	unittest.main()
